@@ -17,7 +17,7 @@ classNames = { 0: 'fondo',
 net = cv2.dnn.readNetFromCaffe(arqModel, model)
 
 #--- Captura de video ---#
-captura = cv2.VideoCapture(0)
+captura = cv2.VideoCapture("../proyecto7_pythorch_torchvision/img/trafic3.mp4")
 
 # recorre y muestra las capturas de la camara
 while (captura.isOpened()) :
@@ -37,8 +37,13 @@ while (captura.isOpened()) :
         detections = net.forward()
         # recorrer las detecciones
         for detection in detections[0][0] :
-            # Para la detección si el objeto es una persona
-            if detection[2] > 0.5 :
+            # print(detection)
+            # for itemDetection in detection:
+                # print(type(itemDetection))
+            if detection[1] == 0:
+                break
+            # Para el umbral de confiabilidad
+            if detection[2] > 0.39 :
                 # recupera la etiqueta del objeto detectado que se encuenta en la posición 1 de la detección
                 label = classNames[detection[1]]
                 # crea el rectangulo extrayendo lo últimos 4 elementos de la detección y multiplicandolos
@@ -51,12 +56,13 @@ while (captura.isOpened()) :
                 # muestra labels
                 cv2.putText(imagen, "Conf: {:.0f}%".format(detection[2] * 100), (xStart, yStart - 5), 1, 1.2, (255, 0, 0), 2)
                 cv2.putText(imagen, label, (xStart, yStart - 25), 1, 1.2, (255, 0, 0), 2)
-                break
+
         # muestra las imagenes
         cv2.imshow('Capturas de video', imagen)
+
         # 0xFF cuando la maquina es de 64bits y verifica
         # que se haya presionado la tecla s
-        if cv2.waitKey(1) & 0xFF == ord('s'):
+        if cv2.waitKey(20) & 0xFF == ord('s'):
             break
     else:
          break
